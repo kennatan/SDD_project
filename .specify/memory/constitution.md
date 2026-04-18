@@ -1,16 +1,12 @@
 <!-- 
 Sync Impact Report
-- Version change: 1.0.0 → 1.1.0 (Minor Update)
+- Version change: 1.1.1 → 1.2.0 (Minor Update)
 - List of modified principles:
-  - Added: VI. 高品質與可測試性 (High Quality & Testable)
-  - Added: VII. MVP 與簡約設計 (MVP & No Overdesign)
-  - Added: VIII. 語言規範 (Traditional Chinese Standard)
-- Added sections: N/A (Expanded Core Principles)
+  - Added: IX. 專業代理人協作與審查 (Expert Agent Collaboration & Review)
+- Added sections: N/A (Expanded Core Principles & Workflow Gates)
 - Removed sections: N/A
-- Templates requiring updates: 
-  - .specify/templates/plan-template.md (✅ updated)
-  - .specify/templates/spec-template.md (✅ updated)
-- Follow-up TODOs: None
+- Templates requiring updates: N/A
+- Follow-up TODOs: 確保在執行 /speckit.plan 與 /speckit.implement 時主動召喚對應 Agent。
 -->
 
 # SDD Project Constitution
@@ -38,8 +34,13 @@ Sync Impact Report
 ### VII. MVP 與簡約設計 (MVP & No Overdesign)
 開發應專注於「最小可行性產品 (Minimum Viable Product)」，優先交付核心價值。嚴禁過度設計 (Overdesign)，拒絕在現階段引入未來「可能」需要但目前無明確需求的複雜架構或功能。
 
-### VIII. 語言規範：正體中文 (Language Standard)
-本專案的所有文件、註解、任務描述及通訊內容，一律使用**正體中文 (Traditional Chinese)**。確保團隊溝通的一致性與精確性。
+### VIII. 語言規範：正體中文 (Mandatory Traditional Chinese)
+本專案的所有產出物——包含規格書 (Spec)、計畫 (Plan)、任務 (Tasks)、檢核表 (Checklist)、文件註解及對話通訊內容——一律強制使用**正體中文 (Traditional Chinese)**。確保團隊溝通的一致性、精確性與專業度。
+
+### IX. 專業代理人協作與審查 (Expert Agent Review)
+專案開發必須整合專業 AI 代理人進行多維度品質控管：
+- **UX 審查 (`ux-skill-agent`)**：於計畫與設計階段執行，確保流程符合「無負擔紀錄」原則與 MVP 核心價值。
+- **資安審查 (`security-auditor-react`)**：於實作與驗證階段執行，主動偵測 SQL 注入、硬編碼憑證等漏洞。
 
 ## Technical Constraints
 
@@ -48,11 +49,12 @@ Sync Impact Report
 ## Development Workflow Gates
 
 1. **規格審查 (Specification Review)**：未經核准的 Spec 不得進入計畫階段。
-2. **計畫審查 (Plan Review)**：未經核准的 Plan 與 Tasks 不得開始實作。
-3. **驗證門檻 (Verification Gate)**：所有實作任務必須通過自動化測試驗證行為正確性，否則視為未完成。
-4. **持久化門檻 (Persistence Gate)**：所有變更必須提交至 Git (透過自動提交掛鉤強制執行)。
+2. **計畫審查 (Plan Review)**：必須通過 **UX 審查**，確保實作路徑符合 MVP 與使用者體驗。
+3. **驗證門檻 (Verification Gate)**：所有實作任務必須通過自動化測試驗證行為正確性。
+4. **資安掃描 (Security Audit)**：所有新功能代碼必須通過 **資安審查員** 的漏洞掃描。
+5. **持久化門檻 (Persistence Gate)**：所有變更必須提交至 Git (透過自動提交掛鉤強制執行)。
 
 ## Governance
 本憲法高於所有其他非正式實務。原則的修訂需要明確的文件紀錄、版本遞增及遷移計畫。所有 PR 審核與 AI 驅動任務皆須驗證是否符合本憲法原則。
 
-**Version**: 1.1.0 | **Ratified**: 2026-04-18 | **Last Amended**: 2026-04-18
+**Version**: 1.2.0 | **Ratified**: 2026-04-18 | **Last Amended**: 2026-04-18
