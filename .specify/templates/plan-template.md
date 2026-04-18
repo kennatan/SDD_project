@@ -31,7 +31,11 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+1. **Iterative Persistence**: Does this plan include explicit checkpoints for Git commits? [YES/NO]
+2. **Library-First**: Is the feature structured as a standalone, testable library? [YES/NO]
+3. **Test-First**: Are automated tests defined and scheduled before implementation? [YES/NO]
+4. **CLI & Automation**: Is the functionality exposed via a clean CLI/Script interface? [YES/NO]
+5. **Observability**: Does the design include structured logging and error handling? [YES/NO]
 
 ## Project Structure
 
