@@ -2,9 +2,9 @@
   "ai": "gemini",
   "branch_numbering": "sequential",
   "context_file": "GEMINI.md",
-  "here": false,
+  "here": true,
   "integration": "gemini",
   "preset": null,
-  "script": "ps",
+  "script": "sh",
   "speckit_version": "0.7.4.dev0"
 }
