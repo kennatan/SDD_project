@@ -1,0 +1,12 @@
+﻿{
+    "private":  true,
+    "workspaces":  [
+                       "apps/*",
+                       "packages/*"
+                   ],
+    "name":  "sdd-project",
+    "scripts":  {
+                    "test":  "npm test --workspaces",
+                    "build":  "npm run build --workspaces"
+                }
+}
