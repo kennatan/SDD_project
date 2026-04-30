@@ -17,6 +17,7 @@
 *   `id`: UUID (Primary Key)
 *   `name`: String (唯一值)
 *   `status`: Enum (ACTIVE, INACTIVE, DELETED)
+*   `alertThreshold`: Integer (預設 0，代表不啟動警示；若 > 0 則為一小時內報修件數閾值)
 *   `createdAt`: Timestamp
 
 ### User (使用者)

@@ -1,34 +1,33 @@
-# 規格品質檢核表：緊急任務報修紀錄系統 (Emergency Task Reporting)
+# Specification Quality Checklist: 緊急任務報修紀錄系統
 
-**目的**：在進入計畫階段前，驗證規格的完整性與品質。
-**建立日期**：2026-04-18
-**特性路徑**：[specs/001-emergency-task-report/spec.md]
+**Purpose**: Validate specification completeness and quality before proceeding to planning
+**Created**: 2026-04-29
+**Feature**: [Link to spec.md](../spec.md)
 
-## 內容品質
+## Content Quality
 
-- [x] 無實作細節（語言、框架、API）
-- [x] 專注於使用者價值與業務需求
-- [x] 以非技術利害關係人可理解的方式書寫
-- [x] 所有強制性章節皆已完成
+- [x] No implementation details (languages, frameworks, APIs)
+- [x] Focused on user value and business needs
+- [x] Written for non-technical stakeholders
+- [x] All mandatory sections completed
 
-## 需求完整性
+## Requirement Completeness
 
-- [x] 無剩餘的 [需要釐清] 標記
-- [x] 需求具備可測試性且無歧義
-- [x] 成功準則具備可衡量性
-- [x] 成功準則與技術無關（無實作細節）
-- [x] 所有驗收情境皆已定義
-- [x] 已識別邊際案例（詳見驗收情境）
-- [x] 範圍界定清晰
-- [x] 已識別依賴關係與假設
+- [x] Requirements are testable and unambiguous
+- [x] Success criteria are measurable
+- [x] Success criteria are technology-agnostic
+- [x] All acceptance scenarios are defined
+- [x] Edge cases (Idempotency, Retention) are identified
+- [x] Scope is clearly bounded
+- [x] Dependencies and assumptions identified
 
-## 功能就緒度
+## Feature Readiness
 
-- [x] 所有功能需求皆有明確的驗收準則
-- [x] 使用者情境涵蓋主要流程
-- [x] 功能符合成功準則中定義的可衡量成果
-- [x] 規格書中無洩漏實作細節
+- [x] All functional requirements have clear acceptance criteria
+- [x] User scenarios cover primary flows
+- [x] Feature meets measurable outcomes defined in Success Criteria
+- [x] No implementation details leak into specification
 
-## 備註
+## Notes
 
-- 目前規格書中仍包含 3 個 [需要釐清] 標記，待用戶回覆後更新。
+- v1.3.0 已量化效能指標並修正測試框架規範，符合憲法 TDD 要求。
