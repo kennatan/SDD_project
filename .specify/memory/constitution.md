@@ -1,20 +1,21 @@
 <!-- 
 Sync Impact Report
-- Version change: 1.1.1 → 1.2.0 (Minor Update)
+- Version change: 1.2.0 → 1.2.1 (Patch Update)
 - List of modified principles:
-  - Added: IX. 專業代理人協作與審查 (Expert Agent Collaboration & Review)
-- Added sections: N/A (Expanded Core Principles & Workflow Gates)
+  - Updated: I. 迭代持久化 (加入遠端同步強制要求)
+  - Updated: Gate 5. 持久化門檻 (納入 GitHub 同步)
+- Added sections: N/A
 - Removed sections: N/A
 - Templates requiring updates: N/A
-- Follow-up TODOs: 確保在執行 /speckit.plan 與 /speckit.implement 時主動召喚對應 Agent。
+- Follow-up TODOs: 確保後續所有實作指令皆自動執行 push 指令。
 -->
 
 # SDD Project Constitution
 
 ## Core Principles
 
-### I. Iterative Persistence (Iteration-First)
-每一次具意義的變更、任務完成或執行 Spec Kit 指令，都必須以 Git commit 作為結尾。確保專案開發歷程透明、可追蹤且可回溯。
+### I. Iterative Persistence (Iteration-First & Remote-Sync)
+每一次具意義的變更、任務完成或執行 Spec Kit 指令，都必須以 Git commit 作為結尾。**同時，必須立即同步 (Push) 至 GitHub 遠端倉庫**。確保本地與遠端開發歷程同步、透明且具備冗餘備援，嚴禁長期保留未同步之本地提交。
 
 ### II. Library-First Architecture
 每一項功能開發必須先以獨立程式庫 (Standalone Library) 的形式開始。程式庫必須自成一體、可獨立測試並具備完整文件。拒絕僅具組織性質的程式庫，每一項開發都必須有明確的功能目的。
@@ -52,9 +53,9 @@ Sync Impact Report
 2. **計畫審查 (Plan Review)**：必須通過 **UX 審查**，確保實作路徑符合 MVP 與使用者體驗。
 3. **驗證門檻 (Verification Gate)**：所有實作任務必須通過自動化測試驗證行為正確性。
 4. **資安掃描 (Security Audit)**：所有新功能代碼必須通過 **資安審查員** 的漏洞掃描。
-5. **持久化門檻 (Persistence Gate)**：所有變更必須提交至 Git (透過自動提交掛鉤強制執行)。
+5. **持久化門檻 (Persistence Gate)**：所有變更必須提交至 Git **並同步至 GitHub** (透過自動提交與同步掛鉤強制執行)。
 
 ## Governance
 本憲法高於所有其他非正式實務。原則的修訂需要明確的文件紀錄、版本遞增及遷移計畫。所有 PR 審核與 AI 驅動任務皆須驗證是否符合本憲法原則。
 
-**Version**: 1.2.0 | **Ratified**: 2026-04-18 | **Last Amended**: 2026-04-18
+**Version**: 1.2.1 | **Ratified**: 2026-04-18 | **Last Amended**: 2026-04-29
