@@ -1,10 +1,10 @@
-﻿import express from 'express';
+import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import 'dotenv/config';
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3005; // 統一使用我們之前測試成功的 3005
 
 app.use(cors());
 app.use(bodyParser.json());
