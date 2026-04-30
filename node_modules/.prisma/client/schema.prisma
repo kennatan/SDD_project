@@ -28,11 +28,12 @@ model User {
 }
 
 model Category {
-  id        String         @id @default(uuid())
-  name      String         @unique
-  status    CategoryStatus @default(ACTIVE)
-  createdAt DateTime       @default(now())
-  records   TaskRecord[]
+  id             String         @id @default(uuid())
+  name           String         @unique
+  status         CategoryStatus @default(ACTIVE)
+  alertThreshold Int            @default(0)
+  createdAt      DateTime       @default(now())
+  records        TaskRecord[]
 }
 
 model TaskRecord {
