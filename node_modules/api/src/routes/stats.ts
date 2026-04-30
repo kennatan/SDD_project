@@ -1,29 +1,35 @@
-﻿import { Router } from 'express';
-import { getCategoryStats, getTaskTrend } from 'core/src/services/statsService';
-import { getRecentRecords } from 'core/src/services/recordService';
-import { convertToCsvWithBom } from 'core/src/utils/csvExporter';
-import { authorize, Role } from 'core/src/auth';
+import { Router } from 'express';
+import { getCategoryStats, getTaskTrend, detectSpikes } from '@sdd/core/services/statsService';
+import { getRecentRecords } from '@sdd/core/services/recordService';
+import { convertToCsvWithBom } from '@sdd/core/utils/csvExporter';
+import { authorize, Role } from '@sdd/core/auth';
 
 const router = Router();
 
-// 獲取圖表統計數據
+/**
+ * [US3] 獲取儀表板統計數據
+ */
 router.get('/dashboard', authorize([Role.SUPERVISOR]), async (req, res) => {
   try {
     const categories = await getCategoryStats();
-    const trend = await getTaskTrend('week');
-    res.json({ categories, trend });
+    const spikes = await detectSpikes();
+    const trend = await getTaskTrend();
+    res.json({ categories, spikes, trend });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// 匯出 CSV 檔案
+/**
+ * [US3] 匯出全量資料 CSV
+ */
 router.get('/export', authorize([Role.SUPERVISOR]), async (req, res) => {
   try {
-    const data = await getRecentRecords(100);
+    const data = await getRecentRecords(1000); // 匯出近期 1000 筆
     const csv = convertToCsvWithBom(data);
-    res.setHeader('Content-Type', 'text/csv');
-    res.setHeader('Content-Disposition', 'attachment; filename=report.csv');
+    
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', 'attachment; filename=emergency_report.csv');
     res.send(csv);
   } catch (err: any) {
     res.status(500).json({ error: err.message });
