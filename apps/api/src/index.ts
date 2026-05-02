@@ -1,17 +1,23 @@
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import 'dotenv/config';
+
+import categoryRoutes from './routes/categories.js';
+import recordRoutes from './routes/records.js';
+import statRoutes from './routes/stats.js';
 
 const app = express();
-const PORT = process.env.PORT || 3005; // 統一使用我們之前測試成功的 3005
+const PORT = process.env.PORT || 3005;
 
 app.use(cors());
 app.use(bodyParser.json());
 
-// 基礎健康檢查
+app.use('/categories', categoryRoutes);
+app.use('/records', recordRoutes);
+app.use('/stats', statRoutes);
+
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({ status: 'ok' });
 });
 
 app.listen(PORT, () => {

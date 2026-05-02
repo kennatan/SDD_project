@@ -1,17 +1,22 @@
 /**
- * 生成帶有 BOM 的 CSV 字串 (相容 Excel)
+ * [US3] 強制格式化 CSV 工具
+ * 解決 undefined 字串與欄位偏移問題
  */
-export const convertToCsvWithBom = (data: any[]): string => {
-  if (data.length === 0) return '\uFEFF';
+export const convertToCSV = (data: any[], headers: string[]) => {
+  // 建立標題列
+  const headerRow = headers.join(',');
   
-  // 取出欄位名稱
-  const headers = Object.keys(data[0]).join(',');
-  
-  // 生成資料列 (含引號處理以避免內容逗點破壞格式)
-  const rows = data.map(row => 
-    Object.values(row).map(val => `"${val}"`).join(',')
-  ).join('\n');
+  // 建立數據列
+  const rows = data.map(obj => {
+    return headers.map(header => {
+      const rawVal = obj[header];
+      // 關鍵修復：確保 null/undefined 變成長度為 0 的空字串，而非 "undefined" 字串
+      const safeVal = (rawVal === undefined || rawVal === null) ? '' : rawVal;
+      // 處理內容中的引號，防止 CSV 格式崩潰
+      return `"${String(safeVal).replace(/"/g, '""')}"`;
+    }).join(',');
+  });
 
-  // 拼接 UTF-8 BOM (\uFEFF)
-  return '\uFEFF' + headers + '\n' + rows;
+  // 加入 UTF-8 BOM (\ufeff) 確保 Excel 正常讀取中文
+  return '\ufeff' + [headerRow, ...rows].join('\n');
 };
