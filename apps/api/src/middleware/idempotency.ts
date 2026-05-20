@@ -1,23 +1,38 @@
 import { Request, Response, NextFunction } from 'express';
 
-// 簡單的記憶體防抖 (實務上建議用 Redis)
-const cache = new Map<string, number>();
+// 記憶體快取 (MVP 階段適用，擴展至多實體時需改用 Redis)
+const idempotencyCache = new Map<string, number>();
 
 /**
- * [SC-001] 3 秒防抖中介軟體
+ * 3 秒防抖中介軟體
+ * 規則：同一使用者 (creatorId) 在 3 秒內不得針對同一卡號 (cardNumber) 重複提交
  */
-export const checkIdempotency = (req: Request, res: Response, next: NextFunction) => {
-  const { extension, categoryId } = req.body;
-  const key = `${extension}-${categoryId}`;
-  const now = Date.now();
+export const preventDuplicate = (req: Request, res: Response, next: NextFunction) => {
+  const { cardNumber, creatorId } = req.body;
 
-  if (cache.has(key)) {
-    const lastTime = cache.get(key)!;
-    if (now - lastTime < 3000) {
-      return res.status(429).json({ error: '請勿重複提交，請稍候 3 秒。' });
-    }
+  if (!cardNumber || !creatorId) {
+    return next(); // 交給驗證器處理缺少欄位的錯誤
   }
 
-  cache.set(key, now);
+  const cacheKey = `${creatorId}:${cardNumber}`;
+  const now = Date.now();
+  const lastRequestTime = idempotencyCache.get(cacheKey);
+
+  if (lastRequestTime && now - lastRequestTime < 3000) {
+    return res.status(429).json({ 
+      error: '重複提交', 
+      message: '系統偵測到重複操作，請稍候 3 秒後再試。' 
+    });
+  }
+
+  idempotencyCache.set(cacheKey, now);
+  
+  // 定期清理過期快取 (避免記憶體洩漏)
+  setTimeout(() => {
+    if (idempotencyCache.get(cacheKey) === now) {
+      idempotencyCache.delete(cacheKey);
+    }
+  }, 3100);
+
   next();
 };

@@ -1,39 +1,35 @@
-import express from 'express';
-import { createRecord, getRecords } from '../../../../packages/core/src/services/recordService.js';
-import { checkIdempotency } from '../middleware/idempotency.js';
+import { Router } from 'express';
+import { createRecord } from '@sdd/core/services/recordService';
+import { preventDuplicate } from '../middleware/idempotency';
+import { validateCardNumber, validateExtension } from '@sdd/core/validators';
 
-const router = express.Router();
+const router = Router();
 
-router.post('/', checkIdempotency, async (req, res) => {
-  try {
-    const { extension, location, categoryId, description, handling } = req.body;
-    
-    // 使用 Seed 時建立的真實 ID
-    const creatorId = 'system-default-user'; 
+/**
+ * [US1] 提交報修紀錄
+ */
+router.post('/', preventDuplicate, async (req, res) => {
+  const { cardNumber, extension, categoryId, creatorId, problemDescription } = req.body;
 
-    const record = await createRecord({
-      extension,
-      location,
-      categoryId,
-      description,
-      handling,
-      creatorId
-    });
-
-    res.status(201).json(record);
-  } catch (error) {
-    console.error('API Error:', error);
-    res.status(500).json({ error: '儲存報修紀錄時發生錯誤' });
+  // 1. 嚴格格式驗證
+  if (!validateCardNumber(cardNumber)) {
+    return res.status(400).json({ error: "格式錯誤", message: "卡號必須為 1-6 碼數字。" });
   }
-});
+  if (!validateExtension(extension)) {
+    return res.status(400).json({ error: "格式錯誤", message: "分機必須為 1-10 碼數字。" });
+  }
 
-router.get('/', async (req, res) => {
   try {
-    const query = req.query.q as string || '';
-    const records = await getRecords(query);
-    res.json(records);
-  } catch (error) {
-    res.status(500).json({ error: '獲取紀錄失敗' });
+    const record = await createRecord({
+      cardNumber,
+      extension,
+      categoryId,
+      creatorId,
+      problemDescription
+    });
+    res.status(201).json(record);
+  } catch (err: any) {
+    res.status(500).json({ error: "伺服器錯誤", message: err.message });
   }
 });
 
