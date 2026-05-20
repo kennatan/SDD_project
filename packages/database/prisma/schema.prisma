@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  CS_AGENT
+  SUPERVISOR
+}
+
+enum CategoryStatus {
+  ACTIVE
+  INACTIVE
+  DELETED
+}
+
+model User {
+  id                String       @id @default(uuid())
+  username          String       @unique
+  passwordHash      String
+  role              Role
+  lastUsedExtension String?
+  records           TaskRecord[]
+  logs              AuditLog[]
+}
+
+model Category {
+  id             String         @id @default(uuid())
+  name           String         @unique
+  status         CategoryStatus @default(ACTIVE)
+  alertThreshold Int            @default(0)
+  createdAt      DateTime       @default(now())
+  records        TaskRecord[]
+}
+
+model TaskRecord {
+  id                 String   @id @default(uuid())
+  cardNumber         String
+  extension          String
+  problemDescription String?
+  createdAt          DateTime @default(now())
+  isAnonymized       Boolean  @default(false)
+  externalRefId      String?  @default(uuid())
+  
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String
+  
+  creator    User   @relation(fields: [creatorId], references: [id])
+  creatorId  String
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  action    String
+  metadata  Json?
+  ipAddress String?
+  createdAt DateTime @default(now())
+  
+  user      User   @relation(fields: [userId], references: [id])
+  userId    String
+}
