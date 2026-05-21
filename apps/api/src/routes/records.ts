@@ -1,36 +1,42 @@
 import { Router } from 'express';
-import { createRecord } from '@sdd/core/services/recordService';
-import { preventDuplicate } from '../middleware/idempotency';
-import { validateCardNumber, validateExtension } from '@sdd/core/validators';
+import { mockRecords, mockCategories } from '../utils/mockStore.js';
 
 const router = Router();
 
 /**
- * [US1] 提交報修紀錄
+ * [Mock] 提交報修紀錄
+ * 修正點：從 req.body 讀取與前端一致的 problemDescription 欄位
  */
-router.post('/', preventDuplicate, async (req, res) => {
-  const { cardNumber, extension, categoryId, creatorId, problemDescription } = req.body;
+router.post('/', (req, res) => {
+  const { categoryId, problemDescription, handling, extension, location } = req.body;
+  const category = mockCategories.find(c => c.id === categoryId) || { name: '其他' };
+  
+  const newRecord = {
+    id: `rec-${Date.now()}`,
+    extension: extension || '',
+    location: location || '',
+    categoryId,
+    category,
+    problemDescription: problemDescription || '', 
+    handling: handling || '',
+    createdAt: new Date().toISOString()
+  };
+  
+  mockRecords.unshift(newRecord);
+  res.status(201).json(newRecord);
+});
 
-  // 1. 嚴格格式驗證
-  if (!validateCardNumber(cardNumber)) {
-    return res.status(400).json({ error: "格式錯誤", message: "卡號必須為 1-6 碼數字。" });
-  }
-  if (!validateExtension(extension)) {
-    return res.status(400).json({ error: "格式錯誤", message: "分機必須為 1-10 碼數字。" });
-  }
-
-  try {
-    const record = await createRecord({
-      cardNumber,
-      extension,
-      categoryId,
-      creatorId,
-      problemDescription
-    });
-    res.status(201).json(record);
-  } catch (err: any) {
-    res.status(500).json({ error: "伺服器錯誤", message: err.message });
-  }
+/**
+ * [Mock] 獲取歷史紀錄
+ */
+router.get('/', (req, res) => {
+  const query = (req.query.q as string || '').toLowerCase();
+  const filtered = mockRecords.filter(r => 
+    (r.extension && r.extension.toLowerCase().includes(query)) || 
+    (r.location && r.location.toLowerCase().includes(query)) ||
+    (r.problemDescription && r.problemDescription.toLowerCase().includes(query))
+  );
+  res.json(filtered);
 });
 
 export default router;
