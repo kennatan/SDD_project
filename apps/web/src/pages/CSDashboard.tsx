@@ -2,14 +2,22 @@ import React, { useState, useRef, useEffect } from "react";
 import { ClipboardList, CornerDownLeft, Clock, Search } from 'lucide-react';
 
 export default function CSDashboard() {
-  const [formData, setFormData] = useState({ extension: "", location: "", categoryId: "", description: "", handling: "" });
+  const [formData, setFormData] = useState({ 
+    extension: "", 
+    location: "", 
+    categoryId: "", 
+    problemDescription: "", // 修正點：與 Dashboard 表格對齊
+    handling: "" 
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
   const cardInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    fetch('http://localhost:3005/categories').then(res => res.json()).then(data => setCategories(data));
+    fetch('http://localhost:3005/categories')
+      .then(res => res.json())
+      .then(data => setCategories(data));
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -26,7 +34,7 @@ export default function CSDashboard() {
         setIsSuccess(true);
         setTimeout(() => {
           setIsSuccess(false);
-          setFormData(prev => ({ ...prev, location: "", description: "", handling: "" }));
+          setFormData({ ...formData, location: "", problemDescription: "", handling: "" });
           setIsSubmitting(false);
         }, 800);
       }
@@ -73,7 +81,7 @@ export default function CSDashboard() {
 
           <div className="flex flex-col">
             <Label>事件內容 (EVENT CONTENT)</Label>
-            <textarea className="h-28 bg-slate-50 rounded-xl p-4 text-sm resize-none outline-none focus:bg-white focus:ring-2 focus:ring-[#2f5869]/10 transition-all" placeholder="描述問題細節..." value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} required />
+            <textarea className="h-28 bg-slate-50 rounded-xl p-4 text-sm resize-none outline-none focus:bg-white focus:ring-2 focus:ring-[#2f5869]/10 transition-all" placeholder="描述問題細節..." value={formData.problemDescription} onChange={e => setFormData({...formData, problemDescription: e.target.value})} required />
           </div>
 
           <div className="flex flex-col">

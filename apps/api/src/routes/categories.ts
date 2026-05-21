@@ -1,54 +1,41 @@
 import { Router } from 'express';
-import { getAllCategories, createCategory, softDeleteCategory, updateCategory } from '@sdd/core/services/categoryService';
-import { authorize, Role } from '@sdd/core/auth';
+import { mockCategories } from '../utils/mockStore.js';
 
 const router = Router();
 
-/**
- * 獲取可用分類 (全體可用)
- */
-router.get('/', async (req, res) => {
-  try {
-    const categories = await getAllCategories();
-    res.json(categories);
-  } catch (err: any) {
-    res.status(500).json({ error: err.message });
-  }
+router.get('/', (req, res) => {
+  res.json(mockCategories);
 });
 
-/**
- * [US2] 新增分類 (限主管)
- */
-router.post('/', authorize([Role.SUPERVISOR]), async (req, res) => {
-  try {
-    const category = await createCategory(req.body.name, req.body.alertThreshold);
-    res.status(201).json(category);
-  } catch (err: any) {
-    res.status(400).json({ error: err.message });
-  }
+router.post('/', (req, res) => {
+  const { name } = req.body;
+  console.log('📡 [API] 收到新增分類請求:', name);
+  
+  if (!name) return res.status(400).json({ error: '名稱不能為空' });
+  
+  const newCategory = {
+    id: `${Date.now()}`,
+    name,
+    color: '#' + Math.floor(Math.random()*16777215).toString(16)
+  };
+  
+  mockCategories.push(newCategory);
+  console.log('✅ [API] 分類已更新, 目前總數:', mockCategories.length);
+  res.status(201).json(newCategory);
 });
 
-/**
- * [US2] 修改分類與閾值 (限主管)
- */
-router.put('/:id', authorize([Role.SUPERVISOR]), async (req, res) => {
-  try {
-    const updated = await updateCategory(req.params.id, req.body);
-    res.json(updated);
-  } catch (err: any) {
-    res.status(400).json({ error: err.message });
-  }
-});
-
-/**
- * [US2] 軟刪除分類 (限主管)
- */
-router.delete('/:id', authorize([Role.SUPERVISOR]), async (req, res) => {
-  try {
-    await softDeleteCategory(req.params.id);
+router.delete('/:id', (req, res) => {
+  const { id } = req.params;
+  console.log('📡 [API] 收到刪除分類請求, ID:', id);
+  
+  const index = mockCategories.findIndex(c => c.id === id);
+  if (index > -1) {
+    mockCategories.splice(index, 1);
+    console.log('✅ [API] 分類已刪除');
     res.status(204).send();
-  } catch (err: any) {
-    res.status(400).json({ error: err.message });
+  } else {
+    console.log('❌ [API] 刪除失敗：找不到該分類');
+    res.status(404).json({ error: '分類不存在' });
   }
 });
 
